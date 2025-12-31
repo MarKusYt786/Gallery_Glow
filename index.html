@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GalleryGlow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.jpeg">
+  <style>
+    .gallery img {
+      width: 100%;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    #lightbox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #lightbox.show {
+      display: flex;
+      opacity: 1;
+    }
+    #lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 8px;
+    }
+    .lightbox-controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      color: white;
+      font-size: 2rem;
+      -webkit-user-select: none;
+      user-select: none;
+      padding: 0 30px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+    }
+    .go-back-btn {
+      margin: 20px;
+    }
+  </style>
+  <div class="container text-center my-4">
+  <h1 style="font-family: 'Segoe UI', sans-serif; font-weight: 600; color: #444;">🌟 GalleryGlow</h1>
+  <p class="text-muted">Where every image shines in style</p>
+</div>
+</head>
+<body>
+
+<!-- Image Gallery Grid -->
+<div class="container mt-3">
+  <div class="row gallery">
+    <div class="col-md-4 mb-4">
+      <img src="img1.webp" data-index="0" alt="Photo 1">
+    </div>
+    <div class="col-md-4 mb-4">
+      <img src="img2.avif" data-index="1" alt="Photo 2">
+    </div>
+    <div class="col-md-4 mb-4">
+      <img src="img3.jpg" data-index="2" alt="Photo 3">
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <span class="close-btn">&times;</span>
+  <div class="lightbox-controls">
+    <span class="prev">&lt;</span>
+    <span class="next">&gt;</span>
+  </div>
+  <img src="" id="lightbox-img" alt="Expanded view">
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  const images = $(".gallery img").map(function () {
+    return $(this).attr("src");
+  }).get();
+
+  let currentIndex = 0;
+
+  $(".gallery img").click(function () {
+    currentIndex = parseInt($(this).attr("data-index"));
+    $("#lightbox-img").attr("src", images[currentIndex]);
+    $("#lightbox").addClass("show");
+  });
+
+  $(".close-btn").click(() => {
+    $("#lightbox").removeClass("show");
+  });
+
+  $(".next").click(() => {
+    currentIndex = (currentIndex + 1) % images.length;
+    $("#lightbox-img").attr("src", images[currentIndex]);
+  });
+
+  $(".prev").click(() => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    $("#lightbox-img").attr("src", images[currentIndex]);
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log("Service Worker Registered"));
+  }
+</script>
+
+</body>
+</html>
